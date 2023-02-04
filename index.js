@@ -111,15 +111,14 @@ async function addDept() {
 }
 
 async function addRole() {
-    var callDepts = db.query('SELECT name FROM departments')
+      const callDepts = await db.query(`SELECT * FROM departments`)
+      let deptsList = callDepts.map(({id, name}) => ({
+        value: id,
+        name: name,
+      }
+      ));
 
-    var deptList = callDepts.map(function(departments){
-        return { 
-          department: departments.name 
-        }
-      })
-
-   await inquirer.prompt([
+  const res = await inquirer.prompt([
         {
             type: 'input',
             name: 'newRole',
@@ -134,10 +133,10 @@ async function addRole() {
             type: 'list',
             name: 'roleDept',
             message: 'What DEPARTMENT is this role under?',
-            choices: deptList
+            choices: deptsList
         }])
-    const newRole = await db.query(`INSERT INTO roles(title,salary,department_id), VALUES (${res.newRole},${res.roleSalary},${res.roleDept}`);
-    console.table(newRole)
+    const newRole = await db.query(`INSERT INTO roles(title, salary, department_id) VALUES ("${res.newRole}","${res.roleSalary}","${res.roleDept}"`);
+    console.table("New role successfully added!")
     chooseAction()
 }
 
