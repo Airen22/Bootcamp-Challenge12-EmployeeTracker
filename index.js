@@ -13,7 +13,8 @@ const db = mysql.createConnection(
     password: 'Beach m@yor t3ar',
     database: 'company_db'
   },
-  console.log(`Connected to the company_db database.`)
+  console.log(`--Welcome to your company's employee tracker!--`),
+  chooseAction()
 );
 
 const utils = require("util");
@@ -42,13 +43,13 @@ inquirer.prompt([
 ]).then((res) => {
     switch (res.action) {
         case 'View all departments':
-            departments;
+            viewDepts();
             break;
         case 'View all roles':
-            roles;
+            viewRoles();
             break;
         case 'View all employees':
-            employees;
+            viewEmps();
             break;
         case 'Add a department':
             addDept();
@@ -64,13 +65,40 @@ inquirer.prompt([
             break;
         default:
             console.log("All set!")
-
-
 }})
 }
 
+async function viewDepts() {
+    const departments = await db.query(`SELECT name AS Departments, id as ID FROM departments`)
+    console.table(departments);
+    chooseAction();
+  }
+async function viewRoles() {
+    const roles = await db.query(`SELECT id AS ID, title AS Title, salary AS Salary FROM roles;`)
+    console.table(roles)
+    chooseAction();
+  }
+
+  async function viewEmps() {
+    const employees = await db.query(`SELECT employees.id, employees.first_name AS "First Name", 
+    employees.last_name AS "Last Name",
+    roles.title AS Title, 
+    departments.name AS Department,
+    roles.salary AS Salary,
+    CONCAT(manager.first_name, " ", manager.last_name) AS "Manager"
+    FROM employees
+    LEFT JOIN roles
+    ON employees.role_id = roles.id
+    LEFT JOIN departments
+    ON roles.department_id = departments.id
+    LEFT OUTER JOIN employees AS manager
+    ON employees.manager_id = manager.id;`)
+    console.table(employees);
+    chooseAction();
+  }
+
 async function addDept() {
-    inquirer.prompt([
+   await inquirer.prompt([
         {
             type: 'input',
             name: 'newDept',
@@ -82,7 +110,7 @@ async function addDept() {
 }
 
 async function addRole() {
-    inquirer.prompt([
+    await inquirer.prompt([
         {
             type: 'input',
             name: 'newRole',
@@ -105,7 +133,7 @@ async function addRole() {
 }
 
 async function addEmp() {
-    inquirer.prompt([
+   await inquirer.prompt([
         {
             type: 'input',
             name: 'newFirst',
@@ -136,8 +164,8 @@ async function addEmp() {
     chooseAction()
 }
 
-async function updateEmp() {
-    const updateSql = 'SELECT first_name, last_name, id FROM employee';
+async function updateEmpRole() {
+    const updateSql = 'SELECT first_name, last_name, id FROM employees';
     const empRes = await db.query(updateSql);
     const empList = empRes.map(({id, first_name, last_name}) => ({
         value: id,
