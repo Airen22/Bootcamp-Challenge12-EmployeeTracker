@@ -98,19 +98,20 @@ async function viewRoles() {
   }
 
 async function addDept() {
-   await inquirer.prompt([
+   const res = await inquirer.prompt([
         {
             type: 'input',
             name: 'newDept',
             message: 'What is the new department name?',
-        }])
-    const newDept = await db.query(`INSERT INTO departments(name) VALUES ${res.newDept}`);
-    console.table(depts)
+        }]);
+    const newDeptTable = await db.query(`INSERT INTO departments(name) VALUES ("${res.newDept}")`);
+    console.log("New department successfully added!")
+    viewDepts()
     chooseAction()
 }
 
 async function addRole() {
-    await inquirer.prompt([
+   await inquirer.prompt([
         {
             type: 'input',
             name: 'newRole',
