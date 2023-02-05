@@ -4,7 +4,7 @@ VALUES ("Accounting"),
        ("Operations");
 
 INSERT INTO roles (title, salary, department_id)
-VALUES ("CEO", 200000, null)
+VALUES ("CEO", 200000, null),
        ("CFO", 160000, 001),
        ("CIO", 170000, 002),
        ("COO", 160000, 003),
@@ -18,7 +18,7 @@ VALUES ("CEO", 200000, null)
 INSERT INTO employees (first_name, last_name, role_id, manager_id)
 VALUES ("Albus", "Dumbledore", 001, null),
        ("Minderva", "McGonagall", 002, 001),
-       ("Severus", "Snape", 003, 001)
+       ("Severus", "Snape", 003, 001),
        ("Rubius", "Hagrid", 004, 001),
        ("Harry", "Potter", 005, 002),
        ("Ronald", "Weasley", 006, 003),

@@ -48,7 +48,7 @@ inquirer.prompt([
         case 'View all employees':
             viewEmps();
             break;
-        case 'View all employees':
+        case 'View employees by manager':
             viewEmpsByManager();
             break;
         case 'Add a department':
@@ -64,7 +64,7 @@ inquirer.prompt([
             updateEmpRole();
             break;
         default:
-            exit()
+            console.log("All Set! \n (press ctrl + C to close)")
 }})
 }
 
@@ -235,7 +235,7 @@ async function updateEmpRole() {
             choices: empsList
         }
     ])
-    const updatedEmp = await db.query(`UPDATE employees SET role_id = ${res.updatedRole}, manager_id = ${res.empMan} WHERE id = ${empUpdate};`);
+    const updatedEmp = await db.query(`UPDATE employees SET role_id = ${res.updatedRole}, manager_id = ${res.empMan} WHERE id = ${res.empUpdate};`);
     console.log("Employee successfully updated!")
     chooseAction()
 }

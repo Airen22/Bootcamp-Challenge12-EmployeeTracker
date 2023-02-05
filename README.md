@@ -8,7 +8,7 @@ This employee tracker allows users to track, add, and update a company database 
 It provides a list of actions that the user can select from which will prompt for additional information or show specific information based on what the user selects. 
 
 The following link demonstrates the functionality of the app:
-
+https://watch.screencastify.com/v/UWzR5dlcDHVGz9noUZz9
 
 
 ## Installation
@@ -23,7 +23,9 @@ Open the integrated terminal and run "node index.js" to initiate application to 
 ## Credits
 
 Karen Peazzoni: https://github.com/kpeazzoni
+
 Michael Smith: https://github.com/AustinBQ02
+
 Stephen Totten: https://github.com/Crothos
 
 ## License
