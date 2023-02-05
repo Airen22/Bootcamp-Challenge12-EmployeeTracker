@@ -1,15 +1,13 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const { allowedNodeEnvironmentFlags } = require('process');
-
+const { exit } = require('process');
+// const { allowedNodeEnvironmentFlags } = require('process');
 
 // Connect to database
 const db = mysql.createConnection(
   {
     host: 'localhost',
-    // MySQL username,
     user: 'root',
-    // TODO: Add MySQL password here
     password: 'Beach m@yor t3ar',
     database: 'company_db'
   },
@@ -19,7 +17,6 @@ const db = mysql.createConnection(
 
 const utils = require("util");
 db.query = utils.promisify(db.query)
-
 
 const departments = db.query("SELECT * FROM departments ORDER BY name ASC")
 const roles = db.query('SELECT * FROM roles ORDER BY department_id ASC')
@@ -64,7 +61,7 @@ inquirer.prompt([
             updateEmpRole();
             break;
         default:
-            console.log("All set!")
+            exit()
 }})
 }
 
@@ -106,7 +103,6 @@ async function addDept() {
         }]);
     const newDeptTable = await db.query(`INSERT INTO departments(name) VALUES ("${res.newDept}")`);
     console.log("New department successfully added!")
-    // viewDepts()
     chooseAction()
 }
 
@@ -178,9 +174,7 @@ const res = await inquirer.prompt([
             name: 'empMan',
             message: `Who is the employee's MANAGER?`,
             choices: empsList
-        }
-    
-    
+        }    
     ])
     const newEmp = await db.query(`INSERT INTO employees(first_name, last_name, role_id, manager_id) VALUES ("${res.newFirst}", "${res.newLast}",${res.empRole},${res.empMan});`);
     console.log("New employee successfully added!")
