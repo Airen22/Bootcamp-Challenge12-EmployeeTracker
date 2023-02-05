@@ -1,6 +1,5 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const { exit } = require('process');
 // const { allowedNodeEnvironmentFlags } = require('process');
 
 // Connect to database
@@ -31,6 +30,7 @@ inquirer.prompt([
         choices: ['View all departments',
         'View all roles',
         'View all employees',
+        'View employees by manager',
         'Add a department',
         'Add a role',
         'Add an employee',
@@ -47,6 +47,9 @@ inquirer.prompt([
             break;
         case 'View all employees':
             viewEmps();
+            break;
+        case 'View all employees':
+            viewEmpsByManager();
             break;
         case 'Add a department':
             addDept();
@@ -89,11 +92,28 @@ async function viewRoles() {
     LEFT JOIN departments
     ON roles.department_id = departments.id
     LEFT OUTER JOIN employees AS manager
-    ON employees.manager_id = manager.id ORDER BY departments.id ASC;`)
+    ON employees.manager_id = manager.id ORDER BY employees.last_name ASC;`)
     console.table(employees);
     chooseAction();
   }
 
+  async function viewEmpsByManager() {
+    const employees = await db.query(`SELECT employees.id, employees.first_name AS "First Name", 
+    employees.last_name AS "Last Name",
+    roles.title AS Title, 
+    departments.name AS Department,
+    roles.salary AS Salary,
+    CONCAT(manager.first_name, " ", manager.last_name) AS "Manager"
+    FROM employees
+    LEFT JOIN roles
+    ON employees.role_id = roles.id
+    LEFT JOIN departments
+    ON roles.department_id = departments.id
+    LEFT OUTER JOIN employees AS manager
+    ON employees.manager_id = manager.id ORDER BY manager.last_name ASC;`)
+    console.table(employees);
+    chooseAction();
+  }
 async function addDept() {
    const res = await inquirer.prompt([
         {
@@ -215,7 +235,7 @@ async function updateEmpRole() {
             choices: empsList
         }
     ])
-    const updatedEmp = await db.query(`UPDATE employees SET role_id = ${res.updatedRole}, manager_id = ${res.empMan} WHERE id = ${empUdate};`);
+    const updatedEmp = await db.query(`UPDATE employees SET role_id = ${res.updatedRole}, manager_id = ${res.empMan} WHERE id = ${empUpdate};`);
     console.log("Employee successfully updated!")
     chooseAction()
 }
